@@ -17,6 +17,7 @@ class NotificationTile extends StatelessWidget {
   final TextStyle titleTextStyle;
   final TextStyle? subtitleTextStyle;
   final List<BoxShadow>? boxShadow;
+  final Widget icon;
 
   const NotificationTile({
     Key? key,
@@ -30,12 +31,41 @@ class NotificationTile extends StatelessWidget {
     required this.titleTextStyle,
     required this.subtitleTextStyle,
     required this.boxShadow,
+    required this.icon,
     this.spacing = 0,
     this.padding,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    const Map<int, String> weekdayName = {
+      1: "Mon",
+      2: "Tue",
+      3: "Wed",
+      4: "Thu",
+      5: "Fri",
+      6: "Sat",
+      7: "Sun"
+    };
+    int day() {
+      DateTime currentDate = DateTime.now();
+      DateTime notificationDate = date;
+      if (currentDate.year == notificationDate.year &&
+          currentDate.month == notificationDate.month &&
+          currentDate.day == notificationDate.day) {
+        return 2;
+      } else {
+        if (currentDate.year == notificationDate.year &&
+            currentDate.month == notificationDate.month) {
+          if (currentDate.day - notificationDate.day < 7) {
+            return 1;
+          }
+          return 0;
+        }
+        return 0;
+      }
+    }
+
     return Container(
       margin: padding,
       height: height,
@@ -58,10 +88,20 @@ class NotificationTile extends StatelessWidget {
                     maxLines: 1,
                   ),
                 ),
-                Text(
-                  'Today ${DateFormat('h:mm a').format(date)}',
-                  style: kCardTopTextStyle,
-                )
+                day() == 2
+                    ? Text(
+                        'Today ${DateFormat('h:mm a').format(date)}',
+                        style: kCardTopTextStyle,
+                      )
+                    : day() == 1
+                        ? Text(
+                            '${weekdayName[DateTime.now().weekday]} ${DateFormat('h:mm a').format(date)}',
+                            style: kCardTopTextStyle,
+                          )
+                        : Text(
+                            '${DateFormat('EEE, M/d/y').format(date)}',
+                            style: kCardTopTextStyle,
+                          )
               ],
             ),
           ),
@@ -69,10 +109,9 @@ class NotificationTile extends StatelessWidget {
             height: 17,
           ),
           ListTile(
-            leading: Icon(
-              Icons.account_circle,
-              size: 48,
-            ),
+            leading: icon,
+            iconColor:
+                Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
             title: Text(
               title,
               maxLines: 1,

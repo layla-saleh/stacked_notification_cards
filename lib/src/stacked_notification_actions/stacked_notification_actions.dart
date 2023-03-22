@@ -37,7 +37,7 @@ class StackedNotificationActions extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         padding,
-        padding,
+        0,
         padding,
         spacing,
       ),

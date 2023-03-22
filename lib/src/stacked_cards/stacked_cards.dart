@@ -79,9 +79,9 @@ class StackedCards extends StatelessWidget {
         openThreshold: 0.25,
         closeThreshold: 0.5,
         motion: BehindMotion(),
-        dismissible: DismissiblePane(
-          onDismissed: () => onTapClearAll,
-        ),
+        // dismissible: DismissiblePane(
+        //   onDismissed: () => onTapClearAll,
+        // ),
         children: [
           SlideButton(
             padding: EdgeInsets.fromLTRB(

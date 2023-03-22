@@ -168,6 +168,7 @@ class AnimatedOffsetList extends StatelessWidget {
                         titleTextStyle: titleTextStyle,
                         subtitleTextStyle: subtitleTextStyle,
                         boxShadow: boxShadow,
+                        icon: notification.leading,
                         padding: EdgeInsets.symmetric(
                           horizontal: padding,
                         ),

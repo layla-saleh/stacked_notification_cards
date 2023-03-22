@@ -80,7 +80,8 @@ class LastNotificationCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Today ${DateFormat('h:mm a').format(notification.date)}',
+                        // 'Today ${DateFormat('h:mm a').format(notification.date)}',
+                        '',
                         style: kCardTopTextStyle,
                       )
                     ],
@@ -102,10 +103,10 @@ class LastNotificationCard extends StatelessWidget {
                 child: Visibility(
                   visible: controller.value <= 0.2,
                   child: ListTile(
-                    leading: Icon(
-                      Icons.account_circle,
-                      size: 48,
-                    ),
+                    leading: notification.leading,
+                    iconColor: Theme.of(context)
+                        .bottomNavigationBarTheme
+                        .selectedItemColor,
                     title: Text(
                       notification.title,
                       maxLines: 1,
@@ -136,10 +137,10 @@ class LastNotificationCard extends StatelessWidget {
                 child: Visibility(
                   visible: controller.value >= 0.2,
                   child: ListTile(
-                    leading: Icon(
-                      Icons.account_circle,
-                      size: 48,
-                    ),
+                    leading: notification.leading,
+                    iconColor: Theme.of(context)
+                        .bottomNavigationBarTheme
+                        .selectedItemColor,
                     title: Text(
                       notification.title,
                       maxLines: 1,

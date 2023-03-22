@@ -138,6 +138,7 @@ class ExpandedList extends StatelessWidget {
                     titleTextStyle: titleTextStyle,
                     subtitleTextStyle: subtitleTextStyle,
                     boxShadow: boxShadow,
+                    icon: notification.leading,
                     padding: EdgeInsets.fromLTRB(
                       tilePadding,
                       _topPadding(index),
@@ -219,7 +220,7 @@ class _BuildWithAnimationState extends State<BuildWithAnimation> with SingleTick
             key: UniqueKey(),
             endActionPane: ActionPane(
               motion: BehindMotion(),
-              dismissible: DismissiblePane(onDismissed: () => widget.onTapClear(widget.index)),
+              // dismissible: DismissiblePane(onDismissed: () => widget.onTapClear(widget.index)),
               children: [
                 SlideButton(
                   padding: EdgeInsets.fromLTRB(
