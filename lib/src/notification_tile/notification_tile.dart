@@ -99,7 +99,7 @@ class NotificationTile extends StatelessWidget {
                             style: kCardTopTextStyle,
                           )
                         : Text(
-                            '${DateFormat('EEE, M/d/y').format(date)}',
+                            '${DateFormat('M/d/y').format(date)}',
                             style: kCardTopTextStyle,
                           )
               ],
