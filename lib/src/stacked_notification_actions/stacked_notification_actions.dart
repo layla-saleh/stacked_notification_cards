@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// This widget will be shown at the top of the stacked card. It has title.
 /// and two [Button]s. 'showLess' and 'clear all'
 /// The [Button]s are only visible when cards are expanded.
-class StackedNotificationActions extends StatelessWidget {
+class StackedNotificationActions extends StatefulWidget {
   final AnimationController controller;
   final double padding;
   final double spacing;
@@ -13,7 +13,7 @@ class StackedNotificationActions extends StatelessWidget {
   final VoidCallback clearAll;
   final int notificationCount;
 
-  const StackedNotificationActions({
+  StackedNotificationActions({
     Key? key,
     required this.controller,
     required this.padding,
@@ -26,54 +26,110 @@ class StackedNotificationActions extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<StackedNotificationActions> createState() =>
+      _StackedNotificationActionsState();
+}
+
+class _StackedNotificationActionsState
+    extends State<StackedNotificationActions> {
+  int clicked = 0;
+
+  @override
   Widget build(BuildContext context) {
     final Animation<double> opacity = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: controller,
+        parent: widget.controller,
         curve: Interval(0.4, 0.6),
       ),
     );
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        padding,
+        widget.padding,
         0,
-        padding,
-        spacing,
+        widget.padding,
+        widget.spacing,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          title,
+          widget.title,
           Expanded(
             child: SizedBox(),
           ),
           // showLess button
           GestureDetector(
             onTap: () {
-              controller.reverse();
+              clicked = 0;
+              widget.controller.reverse();
             },
             child: Visibility(
-              visible: notificationCount > 1,
+              visible: widget.notificationCount > 1,
               child: Opacity(
                 opacity: opacity.value,
-                child: showLessAction,
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(Icons.arrow_drop_up),
+                      widget.showLessAction,
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
+          SizedBox(
+            width: 10,
+          ),
           // clear all button
           GestureDetector(
-            onTap: clearAll,
+            onTap: () {
+              pressed();
+            },
             child: Visibility(
-              visible: notificationCount > 1,
+              visible: widget.notificationCount > 1,
               child: Opacity(
                 opacity: opacity.value,
-                child: clearAllNotificationsAction,
+                child: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(15)),
+                    child: clicked == 1
+                        ? Text(
+                            "Clear",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          )
+                        : widget.clearAllNotificationsAction),
               ),
             ),
           )
         ],
       ),
     );
+  }
+
+  void pressed() {
+    if (clicked == 0) {
+      setState(() {
+        clicked = 1;
+      });
+    } else if (clicked == 1) {
+      setState(() {
+        clicked = 2;
+      });
+    } else if (clicked == 2) {
+      setState(() {
+        widget.clearAll();
+        clicked = 0;
+      });
+    }
   }
 }

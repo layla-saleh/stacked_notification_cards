@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../model/notification_card.dart';
 import '../notification_tile/notification_tile.dart';
 import '../notification_tile/slide_button.dart';
@@ -88,7 +88,9 @@ class ExpandedList extends StatelessWidget {
   /// then it will shrink (while animating). This will
   /// give bounce animation when cards are expanding.
   double _topPadding(int index) {
-    return Tween<double>(begin: _getSpacing(index, initialSpacing), end: _getSpacing(index, spacing))
+    return Tween<double>(
+            begin: _getSpacing(index, initialSpacing),
+            end: _getSpacing(index, spacing))
         .animate(
           CurvedAnimation(
             parent: controller,
@@ -120,30 +122,72 @@ class ExpandedList extends StatelessWidget {
                   containerHeight: containerHeight,
                   cornerRadius: cornerRadius,
                   onTapClear: onTapClearCallback,
-                  spacing: _getSpacing(index, spacing),
+                  // spacing: _getSpacing(index, spacing),
+                  spacing: 5,
                   boxShadow: boxShadow,
                   index: index,
                   tileColor: tileColor,
                   endPadding: _getEndPadding(index),
                   tilePadding: tilePadding,
-                  child: NotificationTile(
-                    cardTitle: notificationCardTitle,
-                    date: notification.date,
-                    title: notification.title,
-                    subtitle: notification.subtitle,
-                    spacing: spacing,
-                    height: containerHeight,
-                    color: tileColor,
-                    cornerRadius: cornerRadius,
-                    titleTextStyle: titleTextStyle,
-                    subtitleTextStyle: subtitleTextStyle,
-                    boxShadow: boxShadow,
-                    icon: notification.leading,
-                    padding: EdgeInsets.fromLTRB(
-                      tilePadding,
-                      _topPadding(index),
-                      tilePadding,
-                      _getEndPadding(index),
+                  title: notification.title,
+                  child: GestureDetector(
+                    onTap: () {
+                      notification.title == "Latest Communications!"
+                          ? launchUrl(Uri.parse(
+                              "https://www.medpluspr.com/comunicadosmedlink"))
+                          : notification.title == "Últimas comunicaciones"
+                              ? launchUrl(Uri.parse(
+                                  "https://www.medpluspr.com/medlinknews"))
+                              : showDialog(
+                                  context: context,
+                                  builder: ((BuildContext context) {
+                                    return AlertDialog(
+                                      //alignment: Alignment.center,
+                                      icon: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.topRight,
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                icon: Icon(Icons.close)),
+                                          ),
+                                          notification.leading,
+                                        ],
+                                      ),
+                                      iconColor: Theme.of(context)
+                                          .bottomNavigationBarTheme
+                                          .selectedItemColor,
+                                      title: Text(notification.title),
+                                      content: SingleChildScrollView(
+                                          child: Text(notification.subtitle)),
+                                    );
+                                  }));
+                    },
+                    child: NotificationTile(
+                      cardTitle: notificationCardTitle,
+                      date: notification.date,
+                      title: notification.title,
+                      subtitle: notification.subtitle,
+                      spacing: spacing,
+                      height: containerHeight,
+                      color: tileColor,
+                      cornerRadius: cornerRadius,
+                      titleTextStyle: titleTextStyle,
+                      subtitleTextStyle: subtitleTextStyle,
+                      boxShadow: boxShadow,
+                      icon: notification.leading,
+                      padding: EdgeInsets.fromLTRB(
+                        tilePadding,
+                        _topPadding(index),
+                        tilePadding,
+                        _getEndPadding(index),
+                      ),
                     ),
                   ),
                 );
@@ -172,6 +216,7 @@ class BuildWithAnimation extends StatefulWidget {
   final double spacing;
   final double tilePadding;
   final Widget view;
+  final String title;
   // final Key slidKey;
 
   const BuildWithAnimation({
@@ -189,13 +234,15 @@ class BuildWithAnimation extends StatefulWidget {
     required this.tilePadding,
     required this.onTapView,
     required this.view,
+    required this.title,
   }) : super(key: key);
 
   @override
   _BuildWithAnimationState createState() => _BuildWithAnimationState();
 }
 
-class _BuildWithAnimationState extends State<BuildWithAnimation> with SingleTickerProviderStateMixin {
+class _BuildWithAnimationState extends State<BuildWithAnimation>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
@@ -213,12 +260,19 @@ class _BuildWithAnimationState extends State<BuildWithAnimation> with SingleTick
       key: ValueKey('BuildWithAnimation'),
       animation: _animationController,
       builder: (_, __) => Opacity(
-        opacity: Tween<double>(begin: 1.0, end: 0.0).animate(_animationController).value,
+        opacity: Tween<double>(begin: 1.0, end: 0.0)
+            .animate(_animationController)
+            .value,
         child: SizeTransition(
-          sizeFactor: Tween<double>(begin: 1.0, end: 0.0).animate(_animationController),
+          sizeFactor:
+              Tween<double>(begin: 1.0, end: 0.0).animate(_animationController),
           child: Slidable(
             key: UniqueKey(),
             endActionPane: ActionPane(
+              extentRatio: (widget.title == "Latest Communications!" ||
+                      widget.title == "Últimas comunicaciones")
+                  ? 0.25
+                  : 0.5,
               motion: BehindMotion(),
               // dismissible: DismissiblePane(onDismissed: () => widget.onTapClear(widget.index)),
               children: [
@@ -240,25 +294,28 @@ class _BuildWithAnimationState extends State<BuildWithAnimation> with SingleTick
                   leftCornerRadius: widget.cornerRadius,
                   rightCornerRadius: widget.cornerRadius,
                 ),
-                SlideButton(
-                  padding: EdgeInsets.fromLTRB(
-                    0,
-                    widget.spacing,
-                    widget.tilePadding,
-                    widget.endPadding,
-                  ),
-                  color: widget.tileColor,
-                  boxShadow: widget.boxShadow,
-                  height: widget.containerHeight,
-                  child: widget.clear,
-                  onTap: (context) {
-                    _animationController.forward().then(
-                          (value) => widget.onTapClear(widget.index),
-                        );
-                  },
-                  rightCornerRadius: widget.cornerRadius,
-                  leftCornerRadius: widget.cornerRadius,
-                ),
+                (widget.title == "Latest Communications!" ||
+                        widget.title == "Últimas comunicaciones")
+                    ? SizedBox()
+                    : SlideButton(
+                        padding: EdgeInsets.fromLTRB(
+                          0,
+                          widget.spacing,
+                          widget.tilePadding,
+                          widget.endPadding,
+                        ),
+                        color: widget.tileColor,
+                        boxShadow: widget.boxShadow,
+                        height: widget.containerHeight,
+                        child: widget.clear,
+                        onTap: (context) {
+                          _animationController.forward().then(
+                                (value) => widget.onTapClear(widget.index),
+                              );
+                        },
+                        rightCornerRadius: widget.cornerRadius,
+                        leftCornerRadius: widget.cornerRadius,
+                      ),
               ],
             ),
             child: widget.child,
