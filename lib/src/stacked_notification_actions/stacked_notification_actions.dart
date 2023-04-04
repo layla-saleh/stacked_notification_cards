@@ -89,9 +89,7 @@ class _StackedNotificationActionsState
           ),
           // clear all button
           GestureDetector(
-            onTap: () {
-              pressed();
-            },
+            onTap: pressed,
             child: Visibility(
               visible: widget.notificationCount > 1,
               child: Opacity(
@@ -122,14 +120,10 @@ class _StackedNotificationActionsState
         clicked = 1;
       });
     } else if (clicked == 1) {
+      widget.clearAll();
       setState(() {
-        clicked = 2;
-      });
-    } else if (clicked == 2) {
-      setState(() {
-        widget.clearAll();
         clicked = 0;
       });
-    }
+    } 
   }
 }
