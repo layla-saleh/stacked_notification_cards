@@ -132,10 +132,10 @@ class ExpandedList extends StatelessWidget {
                   title: notification.title,
                   child: GestureDetector(
                     onTap: () {
-                      notification.title == "Latest Communications!"
+                      notification.title == "The latest communications!"
                           ? launchUrl(Uri.parse(
                               "https://www.medpluspr.com/comunicadosmedlink"))
-                          : notification.title == "Últimas comunicaciones"
+                          : notification.title == "Las comunicaciones más recientes!"
                               ? launchUrl(Uri.parse(
                                   "https://www.medpluspr.com/medlinknews"))
                               : showDialog(
@@ -269,8 +269,8 @@ class _BuildWithAnimationState extends State<BuildWithAnimation>
           child: Slidable(
             key: UniqueKey(),
             endActionPane: ActionPane(
-              extentRatio: (widget.title == "Latest Communications!" ||
-                      widget.title == "Últimas comunicaciones")
+              extentRatio: (widget.title == "The latest communications!" ||
+                      widget.title == "Las comunicaciones más recientes!")
                   ? 0.25
                   : 0.5,
               motion: BehindMotion(),
@@ -294,8 +294,8 @@ class _BuildWithAnimationState extends State<BuildWithAnimation>
                   leftCornerRadius: widget.cornerRadius,
                   rightCornerRadius: widget.cornerRadius,
                 ),
-                (widget.title == "Latest Communications!" ||
-                        widget.title == "Últimas comunicaciones")
+                (widget.title == "The latest communications!" ||
+                        widget.title == "Las comunicaciones más recientes!")
                     ? SizedBox()
                     : SlideButton(
                         padding: EdgeInsets.fromLTRB(
