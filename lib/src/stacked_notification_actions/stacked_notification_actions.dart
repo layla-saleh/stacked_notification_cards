@@ -68,7 +68,7 @@ class _StackedNotificationActionsState
               child: Opacity(
                 opacity: opacity.value,
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.symmetric(horizontal: 6,vertical: 3),
                   decoration: BoxDecoration(
                       color: Colors.black12,
                       borderRadius: BorderRadius.circular(15)),
@@ -95,7 +95,7 @@ class _StackedNotificationActionsState
               child: Opacity(
                 opacity: opacity.value,
                 child: Container(
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.symmetric(horizontal: 6,vertical: 3),
                     decoration: BoxDecoration(
                         color: Colors.black12,
                         borderRadius: BorderRadius.circular(15)),
